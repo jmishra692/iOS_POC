@@ -18,9 +18,17 @@ steps:
     command:
       - build_start_time=$(date +%s)
       - echo "Pre-Build Step Started"
-      - 'if [ -z "$APP_VERSION" ]; then echo "Default Build version ${DEFAULT_APP_VERSION} will be deployed"; else echo "Manually provided Build version ${APP_VERSION} will be deployed"; fi'
-      - 'NEW_BUILD_NUMBER=$((STARTING_BUILD_NUMBER + BUILD_NUMBER))'
-      - 'if [ "$TARGET_BUILD_NUMBER" != "0" ]; then NEW_BUILD_NUMBER=$TARGET_BUILD_NUMBER; fi'
+      - |
+        if [ -z "$APP_VERSION" ]; then 
+          echo "Default Build version ${DEFAULT_APP_VERSION} will be deployed"; 
+        else 
+          echo "Manually provided Build version ${APP_VERSION} will be deployed"; 
+        fi
+      - |
+        NEW_BUILD_NUMBER=$((STARTING_BUILD_NUMBER + BUILD_NUMBER))
+        if [ "$TARGET_BUILD_NUMBER" != "0" ]; then 
+          NEW_BUILD_NUMBER=$TARGET_BUILD_NUMBER; 
+        fi
       - echo "Target Build Number: ${NEW_BUILD_NUMBER}"
 
   - label: "Parallel Builds"
@@ -34,6 +42,7 @@ steps:
             else
               echo "Skipping Unit Test"
             fi
+
       - label: "Development Build"
         command:
           - export ENVIRONMENT="Development"
@@ -53,4 +62,3 @@ steps:
           - "/usr/libexec/PlistBuddy -c 'Set :items:0:metadata:bundle-version ${RELEASE_VERSION}_${NEW_BUILD_NUMBER}' ${ARCHIVE_PLIST}"
           - "/usr/libexec/PlistBuddy -c 'Set :items:0:metadata:title ${RELEASE_VERSION}_${NEW_BUILD_NUMBER}' ${ARCHIVE_PLIST}"
           - "mv build/Release-iphoneos/Arlo.app.dSYM.zip build/Release-iphoneos/${ARCHIVE_NAME}.app.dSYM.zip"
-
