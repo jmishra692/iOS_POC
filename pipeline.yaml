@@ -1,7 +1,6 @@
 steps:
-  - label: "Clone Repository"
-    command:
-      - git clone "https://jmishra.c:${PAT}@spruce.arlo.com/apps/ios.git"
+  - label: "Run Build Script"
+    command: "./bash.sh"
     env:
       PAT: "${BUILDKITE_SECRETS.PAT}"
 
