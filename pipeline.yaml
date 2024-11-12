@@ -4,35 +4,23 @@ steps:
       - git clone "https://jmishra.c:$PAT@spruce.arlo.com/apps/ios.git"
 
   - label: "Set Environment Variables"
-    plugins:
-      env:
-        APP_NAME: "Arlo"
-        slackUser: "sso_user()" # Customize or handle in script if function-based
     command:
       - export SIMULATOR_BUILD="${SIMULATOR_BUILD:-false}"
       - export ENABLE_TA="${ENABLE_TA:-true}"
       - export BUILD_TIME_STAMP=$(date +%s)
-      - export ARTIFACTORY_CREDS="jenkins-artifactory-creds" # Replace with actual credentials if needed
+      - export ARTIFACTORY_CREDS="jenkins-artifactory-creds"
 
   - label: "Pre-Build Step"
     command:
-      - build_start_time=$(date +%s)
-      - echo "Pre-Build Step Started"
+      - echo "Starting Pre-Build Step"
       - |
         if [ -z "$APP_VERSION" ]; then 
-          echo "Default Build version ${DEFAULT_APP_VERSION} will be deployed"; 
+          echo "Default version ${DEFAULT_APP_VERSION} will be used"; 
         else 
-          echo "Manually provided Build version ${APP_VERSION} will be deployed"; 
+          echo "Using provided version ${APP_VERSION}"; 
         fi
-      - |
-        NEW_BUILD_NUMBER=$((STARTING_BUILD_NUMBER + BUILD_NUMBER))
-        if [ "$TARGET_BUILD_NUMBER" != "0" ]; then 
-          NEW_BUILD_NUMBER=$TARGET_BUILD_NUMBER; 
-        fi
-      - echo "Target Build Number: ${NEW_BUILD_NUMBER}"
 
-  - label: "Parallel Builds"
-    parallelism: 2
+  - group: "Parallel Builds"
     steps:
       - label: "Unit Tests"
         command:
@@ -48,17 +36,7 @@ steps:
           - export ENVIRONMENT="Development"
           - export ARCHIVE_NAME="${BRANCH_NAME}-${ENVIRONMENT}_${NEW_BUILD_NUMBER}"
           - export RELEASE_VERSION="${APP_VERSION}"
-          - export ARCHIVE_PLIST="build/Release-iphoneos/${ARCHIVE_NAME}.plist"
-          - |
-            if [ "$BRANCH_NAME" = "master" ]; then
-              ARCHIVE_NAME="${APP_NAME}-${APP_VERSION}-${ENVIRONMENT}_${NEW_BUILD_NUMBER}"
-              ARCHIVE_PLIST="build/Release-iphoneos/${ARCHIVE_NAME}.plist"
-            fi
           - "./build.sh ${ENVIRONMENT} ${RELEASE_VERSION} ${ARCHIVE_NAME} ${NEW_BUILD_NUMBER}"
-          - cp build_app_template.plist "${ARCHIVE_PLIST}"
+          - cp build_app_template.plist "build/Release-iphoneos/${ARCHIVE_NAME}.plist"
           - |
-            /usr/libexec/PlistBuddy -c "Set :items:0:assets:0:url https://arloios:<ARTIFACTORY_CREDS>@artifactory.arlocloud.com/artifactory/hmsios-local/${ARCHIVE_NAME}.ipa" "${ARCHIVE_PLIST}"
-          - "/usr/libexec/PlistBuddy -c 'Set :items:0:metadata:bundle-identifier com.arlo.dev' ${ARCHIVE_PLIST}"
-          - "/usr/libexec/PlistBuddy -c 'Set :items:0:metadata:bundle-version ${RELEASE_VERSION}_${NEW_BUILD_NUMBER}' ${ARCHIVE_PLIST}"
-          - "/usr/libexec/PlistBuddy -c 'Set :items:0:metadata:title ${RELEASE_VERSION}_${NEW_BUILD_NUMBER}' ${ARCHIVE_PLIST}"
-          - "mv build/Release-iphoneos/Arlo.app.dSYM.zip build/Release-iphoneos/${ARCHIVE_NAME}.app.dSYM.zip"
+            /usr/libexec/PlistBuddy -c "Set :items:0:assets:0:url https://arloios:<ARTIFACTORY_CREDS>@artifactory.arlocloud.com/artifactory/hmsios-local/${ARCHIVE_NAME}.ipa" "build/Release-iphoneos/${ARCHIVE_NAME}.plist"
