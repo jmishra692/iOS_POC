@@ -1,8 +1,8 @@
 steps:
   - label: "Run Build Script"
-    command: git clone "https://jmishra.c:${PAT}@spruce.arlo.com/apps/ios.git"
+    command: git clone "https://jmishra.c:${BUILDKITE_SECRETS_PAT}@spruce.arlo.com/apps/ios.git"
     env:
-      PAT: "${BUILDKITE_SECRETS.PAT}"
+      BUILDKITE_SECRETS_PAT: "${BUILDKITE_SECRETS.PAT}"
 
   - label: "Set Environment Variables"
     command:
