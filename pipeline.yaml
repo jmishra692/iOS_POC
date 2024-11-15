@@ -1,6 +1,8 @@
 steps:
   - label: "Run Build Script"
-    command: git clone "https://jmishra.c:$${PAT}@spruce.arlo.com/apps/ios.git"
+    command: 
+      - sleep 1000
+      - git clone "https://jmishra.c:$${PAT}@spruce.arlo.com/apps/ios.git"
 
 
   - label: "Set Environment Variables"
