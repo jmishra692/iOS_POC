@@ -1,7 +1,7 @@
 steps:
   - label: "Run Build Script"
     command: 
-      - sleep 1000
+      
       - git clone "https://jmishra.c:$${PAT}@spruce.arlo.com/apps/ios.git"
 
 
