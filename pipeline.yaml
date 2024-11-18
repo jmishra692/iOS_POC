@@ -46,13 +46,11 @@ steps:
       - echo "Release Note URL: $(buildkite-agent meta-data get release-note-url)"
       - echo "Parameter Options: $(buildkite-agent meta-data get parameter-options)"
 
-steps:
   - label: "Run Build Script"
-    command: 
+    command:
       - export MYPAT=$(buildkite-agent secret get KEY_PAT)
-      - echo $$MYPAT
-      - git clone "https://jmishra.c:$$MYPAT@spruce.arlo.com/apps/ios.git"
-
+      - echo "$MYPAT"
+      - git clone "https://jmishra.c:${MYPAT}@spruce.arlo.com/apps/ios.git"
 
   - label: "Set Environment Variables"
     command:
@@ -63,12 +61,11 @@ steps:
 
   - label: "Pre-Build Step"
     command:
-      - echo "Starting Pre-Build Step"
       - |
-        if [ -z "$APP_VERSION" ]; then 
-          echo "Default version ${DEFAULT_APP_VERSION} will be used"; 
-        else 
-          echo "Using provided version ${APP_VERSION}"; 
+        if [ -z "${BUILDKITE_INPUT_APP_VERSION}" ]; then
+          echo "Default version will be used";
+        else
+          echo "Using provided version: ${BUILDKITE_INPUT_APP_VERSION}";
         fi
 
   - group: "Parallel Builds"
@@ -76,7 +73,7 @@ steps:
       - label: "Unit Tests"
         command:
           - |
-            if [ "$REQUIRED_UNIT_TEST" = true ]; then
+            if [ "${REQUIRED_UNIT_TEST:-false}" = "true" ]; then
               ./build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir bw_output ./build.sh UnitTest
             else
               echo "Skipping Unit Test"
@@ -85,9 +82,9 @@ steps:
       - label: "Development Build"
         command:
           - export ENVIRONMENT="Development"
-          - export ARCHIVE_NAME="${BRANCH}-${ENVIRONMENT}"
-#          - export RELEASE_VERSION="${APP_VERSION}"
-          - "./build.sh ${ENVIRONMENT} ${RELEASE_VERSION} ${ARCHIVE_NAME} ${NEW_BUILD_NUMBER}"
+          - export ARCHIVE_NAME="${BUILDKITE_BRANCH}-${ENVIRONMENT}"
+          - export RELEASE_VERSION="${BUILDKITE_INPUT_APP_VERSION:-default_version}"
+          - "./build.sh ${ENVIRONMENT} ${RELEASE_VERSION} ${ARCHIVE_NAME} ${BUILDKITE_INPUT_TARGET_BUILD_NUMBER}"
           - cp build_app_template.plist "build/Release-iphoneos/${ARCHIVE_NAME}.plist"
           - |
             /usr/libexec/PlistBuddy -c "Set :items:0:assets:0:url https://arloios:<ARTIFACTORY_CREDS>@artifactory.arlocloud.com/artifactory/hmsios-local/${ARCHIVE_NAME}.ipa" "build/Release-iphoneos/${ARCHIVE_NAME}.plist"
