@@ -1,8 +1,9 @@
 steps:
   - label: "Run Build Script"
     command: 
-      - export MYPAT=$(buildkite-agent secret get PAT) && echo $MYPAT
-      - git clone "https://jmishra.c:$MYPAT@spruce.arlo.com/apps/ios.git"
+      - export MYPAT=$(buildkite-agent secret get PAT)
+      - echo $$MYPAT
+      - git clone "https://jmishra.c:$$MYPAT@spruce.arlo.com/apps/ios.git"
 
 
   - label: "Set Environment Variables"
