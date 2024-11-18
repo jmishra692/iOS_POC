@@ -3,7 +3,7 @@ steps:
     command: 
       - export MYPAT=$(buildkite-agent secret get KEY_PAT)
       - echo $${MYPAT}
-      - git clone "https://jmishra.c:$${MYPAT}@spruce.arlo.com/apps/ios.git"
+      - git clone "https://jmishra.c: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@spruce.arlo.com/apps/ios.git"
 
 
   - label: "Set Environment Variables"
