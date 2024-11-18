@@ -1,4 +1,37 @@
 steps:
+  - input: "Parameters"
+    fields:
+      - text: "APP_VERSION"
+        hint: "Provide App Version if different from default"
+        required: false
+        key: app-version
+
+      - text: "TARGET_BUILD_NUMBER"
+        hint: "Set target build number"
+        required: true
+        default: 0
+        key: target-build-number
+
+      - text: "RELEASE_NOTE_URL"
+        hint: "Provide release note URL"
+        required: true
+        key: release-note-url
+
+      - select: "Options"
+        multiple: true
+        key: "parameter-options"
+        options:
+          - label: "deployToTestFlight"
+            value: "option-deploy-to-test-flight"
+          - label: "deployBeta"
+            value: "options-deploy-beta"
+          - label: "deployBetaServer"
+            value: "options-deploy-beta-server"
+          - label: "deployQA"
+            value: "options-deploy-qa"
+          - label: "autoDistributeTestFlight"
+            value: "options-auto-distribute-test-flight"
+steps:
   - label: "Run Build Script"
     command: 
       - export MYPAT=$(buildkite-agent secret get KEY_PAT)
