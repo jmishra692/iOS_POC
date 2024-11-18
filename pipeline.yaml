@@ -56,11 +56,10 @@ steps:
           - label: "enableTestAutomation" 
             value: "option-enableTestAutomation"
       - text: "CUSTOM_BUILD_NUMBER"
-        hint: "Set CUSTOM_BUILD_NUMBER"
+        hint: "Setup A New Build Number Starting Point"
         required: true
         default: 0
         key: CUSTOM_BUILD_NUMBER
-        description: "Setup A New Build Number Starting Point"
 
   - label: "Save Metadata"
     command:
