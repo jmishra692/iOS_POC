@@ -31,6 +31,36 @@ steps:
             value: "options-deploy-qa"
           - label: "autoDistributeTestFlight"
             value: "options-auto-distribute-test-flight"
+          - label: "isReleaseCandidate"
+            value: "option-isReleaseCandidate"
+          - label: "isProductionCandidate"
+            value: "options-isProductionCandidate"
+          - label: "requiredUnitTest"
+            value: "options-requiredUnitTest"
+          - label: "doProtecodeScanA"
+            value: "options-doProtecodeScan"
+          - label: "pcFailsBuild"
+            value: "options-pcFailsBuild"
+          - label: "submitAppForReview"
+            value: "option-submitAppForReview"
+          - label: "enableQualityGate" 
+            value: "option-enableQualityGate"
+          - label: "qgFailsBuild"
+            value: "options-qgFailsBuild"
+          - label: "enableSonarCodeCoverage"
+            value: "options-enableSonarCodeCoverage"
+          - label: "doVeracodeScan"
+            value: "options-doVeracodeScan"
+          - label: "simulatorBuild"
+            value: "option-simulatorBuild"
+          - label: "enableTestAutomation" 
+            value: "option-enableTestAutomation"
+      - text: "CUSTOM_BUILD_NUMBER"
+        hint: "Set CUSTOM_BUILD_NUMBER"
+        required: true
+        default: 0
+        key: CUSTOM_BUILD_NUMBER
+        description: "Setup A New Build Number Starting Point"
 
   - label: "Save Metadata"
     command:
@@ -38,6 +68,7 @@ steps:
       - buildkite-agent meta-data set target-build-number "${BUILDKITE_INPUT_TARGET_BUILD_NUMBER}"
       - buildkite-agent meta-data set release-note-url "${BUILDKITE_INPUT_RELEASE_NOTE_URL}"
       - buildkite-agent meta-data set parameter-options "${BUILDKITE_INPUT_PARAMETER_OPTIONS}"
+      - buildkite-agent meta-data set parameter-options "${BUILDKITE_INPUT_CUSTOM_BUILD_NUMBER}"
 
   - label: "Fetch Metadata"
     command:
