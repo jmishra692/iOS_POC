@@ -63,18 +63,11 @@ steps:
 
   - label: "Save Metadata"
     command:
-      - buildkite-agent meta-data set app-version "${BUILDKITE_INPUT_APP_VERSION:-default_version}"
-      - buildkite-agent meta-data set target-build-number "${BUILDKITE_INPUT_TARGET_BUILD_NUMBER}"
-      - buildkite-agent meta-data set release-note-url "${BUILDKITE_INPUT_RELEASE_NOTE_URL}"
-      - buildkite-agent meta-data set parameter-options "${BUILDKITE_INPUT_PARAMETER_OPTIONS}"
-      - buildkite-agent meta-data set parameter-options "${BUILDKITE_INPUT_CUSTOM_BUILD_NUMBER}"
-
-  - label: "Fetch Metadata"
-    command:
-      - echo "App Version: $(buildkite-agent meta-data get app-version)"
-      - echo "Target Build Number: $(buildkite-agent meta-data get target-build-number)"
-      - echo "Release Note URL: $(buildkite-agent meta-data get release-note-url)"
-      - echo "Parameter Options: $(buildkite-agent meta-data get parameter-options)"
+      - buildkite-agent meta-data set app-version
+      - buildkite-agent meta-data set target-build-number
+      - buildkite-agent meta-data set release-note-url
+      - buildkite-agent meta-data set parameter-options 
+      - buildkite-agent meta-data set parameter-options 
 
   - label: "Run Build Script"
     command:
