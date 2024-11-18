@@ -37,8 +37,8 @@ steps:
       - label: "Development Build"
         command:
           - export ENVIRONMENT="Development"
-          - export ARCHIVE_NAME="${BRANCH_NAME}-${ENVIRONMENT}_${NEW_BUILD_NUMBER}"
-          - export RELEASE_VERSION="${APP_VERSION}"
+          - export ARCHIVE_NAME="${BRANCH}-${ENVIRONMENT}"
+#          - export RELEASE_VERSION="${APP_VERSION}"
           - "./build.sh ${ENVIRONMENT} ${RELEASE_VERSION} ${ARCHIVE_NAME} ${NEW_BUILD_NUMBER}"
           - cp build_app_template.plist "build/Release-iphoneos/${ARCHIVE_NAME}.plist"
           - |
